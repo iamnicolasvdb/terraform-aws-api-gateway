@@ -11,9 +11,9 @@ module "labels" {
 
   enabled     = var.enabled
   name        = var.name
-  repository  = var.repository
+  repository  = null
   environment = var.environment
-  managedby   = var.managedby
+  managedby   = null
   label_order = var.label_order
   attributes  = var.attributes
 }
@@ -29,10 +29,18 @@ resource "aws_api_gateway_rest_api" "default" {
   minimum_compression_size = var.minimum_compression_size
   api_key_source           = var.api_key_source
 
-  endpoint_configuration {
-    types = var.types
+  dynamic "endpoint_configuration" {
+    for_each = var.endpoint_configuration
+
+    content {
+      types            = endpoint_configuration.value.types
+      vpc_endpoint_ids = endpoint_configuration.value.vpc_endpoint_ids
+    }
   }
+
   policy = var.api_policy
+
+  tags = var.tags
 }
 
 # Module      : Api Gateway Resource

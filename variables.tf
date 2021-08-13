@@ -6,19 +6,6 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
-variable "repository" {
-  type        = string
-  default     = "https://github.com/clouddrove/terraform-aws-api-gateway"
-  description = "Terraform current module repo"
-
-  validation {
-    # regex(...) fails if it cannot find a match
-    condition     = can(regex("^https://", var.repository))
-    error_message = "The module-repo value must be a valid Git repo link."
-  }
-
-}
-
 variable "environment" {
   type        = string
   default     = "https://registry.terraform.io/modules/clouddrove/api-gateway/aws"
@@ -41,12 +28,6 @@ variable "tags" {
   type        = map(any)
   default     = {}
   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
-}
-
-variable "managedby" {
-  type        = string
-  default     = "hello@clouddrove.com"
-  description = "ManagedBy, eg 'CloudDrove'."
 }
 
 # Module      : Api Gateway
@@ -81,10 +62,13 @@ variable "api_key_source" {
   description = "The source of the API key for requests. Valid values are HEADER (default) and AUTHORIZER."
 }
 
-variable "types" {
+variable "endpoint_configuration" {
   type        = list(any)
-  default     = ["EDGE"]
-  description = "Whether to create rest api."
+  default     = [
+    {
+      types = ["EDGE"]
+    }
+  ]
 }
 
 variable "path_parts" {
